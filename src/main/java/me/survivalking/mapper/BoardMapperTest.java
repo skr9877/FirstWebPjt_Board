@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import me.survivalking.domain.BoardVO;
+import me.survivalking.domain.Criteria;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
@@ -21,6 +22,12 @@ public class BoardMapperTest {
 	public void testGetList() {
 		boardMapper.getList().forEach(board -> log.info(board));
 	}
+	
+	@Test
+	public void testGetPagingList() {
+		boardMapper.getListWithPaging(new Criteria(1,10)).forEach(board -> log.info(board));
+	}
+	
 	
 	//@Test
 	public void testInsert() {
@@ -55,7 +62,7 @@ public class BoardMapperTest {
 		log.info(board);
 	}
 	
-	@Test
+	//@Test
 	public void testupdate() {
 		BoardVO board = new BoardVO();
 		

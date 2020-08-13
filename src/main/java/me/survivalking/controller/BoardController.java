@@ -11,6 +11,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import me.survivalking.domain.BoardVO;
+import me.survivalking.domain.Criteria;
+import me.survivalking.domain.PageDTO;
 import me.survivalking.service.BoardService;
 
 @Controller // 스프링의 Bean으로 인식 웹요청 처리 컨트롤러로 사용
@@ -21,9 +23,10 @@ public class BoardController {
 	private BoardService service;
 	
 	@GetMapping("/list")
-	public void list(Model model) {
+	public void list(Criteria cri, Model model) {
 		log.info("list");
-		model.addAttribute("list", service.getList());
+		model.addAttribute("list", service.getListWithPaging(cri));
+		model.addAttribute("pageMaker", new PageDTO(cri,123));
 	}
 	
 	@GetMapping("/register")

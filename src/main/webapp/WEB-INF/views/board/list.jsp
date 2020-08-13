@@ -20,7 +20,7 @@
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                            <table class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>글 번호</th>
@@ -43,6 +43,24 @@
                                 </c:forEach>
                             </table>
                             <!-- /.table-responsive -->
+                            
+                            <div class='pull-right'>
+                            	<ul class="pagination">
+                            		<c:if test="${pageMaker.prev}">
+                            			<li class="paginate_button previous"><a href="#">Previous</a></li>
+                            		</c:if>
+                            		
+                            		<c:forEach var="num" begin="${pageMaker.startPage}" 
+                            		                     end="${pageMaker.endPage}">
+                            			<li class="paginate_button"><a href="#">${num}</a></li>
+                            		</c:forEach>
+                            		
+                            		<c:if test="${pageMaker.next}">
+                            			<li class="paginate_button previous"><a href="#">Next</a></li>
+                            		</c:if>
+                            	</ul>     
+                            </div>
+                            <!-- end Pagiantion 페이지 만들기 끝 -->
                             
                             <!-- Modal -->
                             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

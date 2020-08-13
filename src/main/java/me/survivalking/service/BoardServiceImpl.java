@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import me.survivalking.domain.BoardVO;
+import me.survivalking.domain.Criteria;
 import me.survivalking.mapper.BoardMapper;
 
 @Log4j
@@ -51,5 +52,12 @@ public class BoardServiceImpl implements BoardService{
 
 
 		return boardMapper.getList();
+	}
+
+	@Override
+	public List<BoardVO> getListWithPaging(Criteria criteria) {
+		log.info("getListWithPaging");
+		
+		return boardMapper.getListWithPaging(criteria);
 	}
 }
