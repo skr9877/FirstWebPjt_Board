@@ -18,4 +18,6 @@ public interface BoardService {
 	
 	public List<BoardVO> getListWithPaging(Criteria criteria);
 	
+	public int getTotalCount(Criteria cri); // 게시글 전체 갯수
+	
 }

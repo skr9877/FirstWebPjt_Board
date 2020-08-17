@@ -13,6 +13,6 @@
 </h1>
 
 <P>  The time on the server is ${serverTime}. </P>
-<a href='/board/list'>홈페이지로 가기</a>
+<a href='/board/list?pageNum=1&amount=10'>홈페이지로 가기</a>
 </body>
 </html>

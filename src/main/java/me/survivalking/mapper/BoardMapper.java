@@ -18,6 +18,8 @@ public interface BoardMapper {
 	
 	public int delete(Long bno); // 삭제 여부에 따라 1, 0
 	
-	public int update(BoardVO board); 
+	public int update(BoardVO board);
+	
+	public int getTotalCount(Criteria cri);
 	
 }

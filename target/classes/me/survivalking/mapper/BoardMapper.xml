@@ -5,11 +5,41 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="me.survivalking.mapper.BoardMapper">
+	<!--  검색 조건 -->
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+				<foreach item= "type" collection="typeArr">
+					<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+					</trim>
+				</foreach>
+			</trim>
+	</sql>
+
 	<select id="getList" resultType="me.survivalking.domain.BoardVO">
 		<![CDATA[
 			select * from tbl_board where bno > 0
 			order by updatedate desc
 		]]>
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+			select count(*) from tbl_board 
+			where 
+			<include refid="criteria"></include>
+			<![CDATA[
+			bno > 0
+			]]>
 	</select>
 	
 	<select id="getListWithPaging" resultType="me.survivalking.domain.BoardVO">
@@ -18,7 +48,11 @@
 			  FROM(
 				SELECT /*+ INDEX_DESC(tb pk_board) */ rownum rn, tb.* 
 				  FROM TBL_BOARD tb
-				 WHERE rownum <= #{pageNum} * #{amount}
+				 WHERE 
+		]]>
+			<include refid="criteria"></include> <!-- 검색조건 include -->
+		<![CDATA[	 
+			  rownum <= #{pageNum} * #{amount}
 			 ) 
 			 WHERE rn > (#{pageNum} - 1) * #{amount}
 		]]>

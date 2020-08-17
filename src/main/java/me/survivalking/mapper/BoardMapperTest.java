@@ -1,5 +1,7 @@
 package me.survivalking.mapper;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,16 @@ public class BoardMapperTest {
 	@Setter(onMethod_ = {@Autowired})
 	private BoardMapper boardMapper;
 	
-	//@Test
-	public void testGetList() {
-		boardMapper.getList().forEach(board -> log.info(board));
-	}
-	
 	@Test
 	public void testGetPagingList() {
-		boardMapper.getListWithPaging(new Criteria(1,10)).forEach(board -> log.info(board));
+		Criteria cri = new Criteria();
+		
+		cri.setKeyword("새로");
+		cri.setType("TCW");
+		
+		List<BoardVO> list = boardMapper.getListWithPaging(cri);
+		
+		list.forEach(board -> log.info(board));
 	}
 	
 	
