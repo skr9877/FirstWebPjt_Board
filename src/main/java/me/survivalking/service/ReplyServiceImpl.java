@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import me.survivalking.domain.Criteria;
+import me.survivalking.domain.ReplyPageDTO;
 import me.survivalking.domain.ReplyVO;
 import me.survivalking.mapper.ReplyMapper;
 
@@ -43,4 +44,10 @@ public class ReplyServiceImpl implements ReplyService{
 		return mapper.getListWithPaging(cri, bno);
 	}
 
+	@Override
+	public ReplyPageDTO getListPage(Criteria cri, Long bno) {
+		return new ReplyPageDTO(mapper.getCountByBno(bno), mapper.getListWithPaging(cri, bno));
+	}
+
+	
 }

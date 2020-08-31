@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import me.survivalking.domain.Criteria;
+import me.survivalking.domain.ReplyPageDTO;
 import me.survivalking.domain.ReplyVO;
 import me.survivalking.service.ReplyService;
 
@@ -28,8 +29,10 @@ import me.survivalking.service.ReplyService;
 public class ReplyController {
 	private ReplyService service;
 	
-	@PostMapping(value = "/new", consumes = "appication/json", produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> create(@RequestBody ReplyVO vo){
+	@PostMapping(value = "/new", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> create (@RequestBody ReplyVO vo){
+		log.info("실행");
+		
 		int insertCount = service.register(vo);
 		
 		return insertCount == 1
@@ -39,21 +42,21 @@ public class ReplyController {
 	
 	@GetMapping(value = "/pages/{bno}/{page}", 
 			    produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<List<ReplyVO>> getList(@PathVariable("page") int page, @PathVariable("bno") Long bno){
+	public ResponseEntity<ReplyPageDTO> getList (@PathVariable("page") int page, @PathVariable("bno") Long bno){
 		Criteria cri = new Criteria(page,10);
 		
-		return new ResponseEntity<>(service.getList(cri, bno), HttpStatus.OK);
+		return new ResponseEntity<>(service.getListPage(cri, bno), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{rno}", 
 			    produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})  
-	public ResponseEntity<ReplyVO> get(@PathVariable("rno") Long rno){
+	public ResponseEntity<ReplyVO> get (@PathVariable("rno") Long rno){
 		
 		return new ResponseEntity<>(service.get(rno), HttpStatus.OK);
 	}
 	
 	@DeleteMapping(value = "/{rno}", produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> remove(@PathVariable("rno") Long rno){
+	public ResponseEntity<String> remove (@PathVariable("rno") Long rno){
 		return service.remove(rno) == 1
 			? new ResponseEntity<>("success", HttpStatus.OK)
 			: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,7 +66,7 @@ public class ReplyController {
 			value = "/{rno}",
 			consumes = "application/json",
 			produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> modify(@RequestBody ReplyVO vo, @PathVariable("rno") Long rno){
+	public ResponseEntity<String> modify (@RequestBody ReplyVO vo, @PathVariable("rno") Long rno){
 		vo.setRno(rno);
 		
 		return service.modify(vo) == 1
