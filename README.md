@@ -12,3 +12,4 @@ Spring 게시판 프로젝트
  . ajax로 rest api 호출 및 json데이터를 받아서 화면 구현
  . $(this).closest("li") 로 가장 가까운 li 반환, remove로 제거
 
+3. 데이터베이스 관계도(작성 예정)
