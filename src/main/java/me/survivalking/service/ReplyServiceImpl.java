@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import me.survivalking.domain.Criteria;
 import me.survivalking.domain.ReplyPageDTO;
 import me.survivalking.domain.ReplyVO;
+import me.survivalking.mapper.BoardMapper;
 import me.survivalking.mapper.ReplyMapper;
 
 @Service
@@ -18,9 +20,14 @@ public class ReplyServiceImpl implements ReplyService{
 	@Setter(onMethod_ = @Autowired)
 	private ReplyMapper mapper;
 	
+	@Setter(onMethod_ = {@Autowired})
+	private BoardMapper boardMapper;
 	
+	@Transactional
 	@Override
 	public int register(ReplyVO vo) {
+		boardMapper.updateReplyCnt(vo.getBno(), 1);
+		
 		return mapper.insert(vo);
 	}
 
@@ -29,8 +36,12 @@ public class ReplyServiceImpl implements ReplyService{
 		return mapper.read(rno);
 	}
 
+	@Transactional
 	@Override
 	public int remove(Long rno) {
+		ReplyVO vo = mapper.read(rno);
+		
+		boardMapper.updateReplyCnt(vo.getBno(), -1);
 		return mapper.delete(rno);
 	}
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import me.survivalking.domain.BoardVO;
 import me.survivalking.domain.Criteria;
@@ -15,9 +16,9 @@ import me.survivalking.mapper.BoardMapper;
 @Service
 @AllArgsConstructor
 public class BoardServiceImpl implements BoardService{
-	@Autowired
+	@Setter(onMethod_ = {@Autowired})
 	private BoardMapper boardMapper;
-
+	
 	@Override
 	public void register(BoardVO board) {
 		log.info("register ....." + board);

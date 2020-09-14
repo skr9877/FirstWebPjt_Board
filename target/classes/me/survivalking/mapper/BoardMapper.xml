@@ -44,9 +44,9 @@
 	
 	<select id="getListWithPaging" resultType="me.survivalking.domain.BoardVO">
 		<![CDATA[
-			SELECT *
+			SELECT rownum rn, bno, title, content, writer, regdate, updatedate, replycnt
 			  FROM(
-				SELECT /*+ INDEX_DESC(tb pk_board) */ rownum rn, tb.* 
+				SELECT /*+ INDEX_DESC(tb pk_board) */ rownum rn, bno, title, content, writer, regdate, updatedate, replycnt
 				  FROM TBL_BOARD tb
 				 WHERE 
 		]]>
@@ -86,4 +86,7 @@
 		 where bno = #{bno}
 	</update>
 
+	<update id="updateReplyCnt">
+		update tbl_board set replycnt = replycnt + #{amount} where bno = #{bno}
+	</update>
 </mapper>
