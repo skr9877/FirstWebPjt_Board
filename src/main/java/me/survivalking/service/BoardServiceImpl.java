@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import me.survivalking.domain.BoardAttachVO;
 import me.survivalking.domain.BoardVO;
 import me.survivalking.domain.Criteria;
+import me.survivalking.mapper.BoardAttachMapper;
 import me.survivalking.mapper.BoardMapper;
 
 @Log4j
@@ -19,11 +22,22 @@ public class BoardServiceImpl implements BoardService{
 	@Setter(onMethod_ = {@Autowired})
 	private BoardMapper boardMapper;
 	
+	@Setter(onMethod_= {@Autowired})
+	private BoardAttachMapper attachMapper;
+	
+	@Transactional
 	@Override
 	public void register(BoardVO board) {
 		log.info("register ....." + board);
 		
 		boardMapper.insertSelectKey(board);
+		
+		if(board.getAttachList() == null || board.getAttachList().size() == 0) return;
+		
+		board.getAttachList().forEach(attach->{
+			attach.setBno(board.getBno());
+			attachMapper.insert(attach);
+		});
 	}
 
 	@Override
@@ -66,5 +80,12 @@ public class BoardServiceImpl implements BoardService{
 	public int getTotalCount(Criteria cri) {
 		
 		return boardMapper.getTotalCount(cri);
+	}
+	
+	// 파일 Service Impl
+	@Override
+	public List<BoardAttachVO> getattachList(Long bno) {
+		
+		return attachMapper.findByBno(bno);
 	}
 }

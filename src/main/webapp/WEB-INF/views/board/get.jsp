@@ -4,7 +4,53 @@
 <%@ taglib uri= "http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> <!-- jstl formatting -->
 
 <%@include file="../includes/header.jsp" %>
-
+			<style>
+			.uploadResult{
+				width:100%;
+				background-color:gray;
+			}
+			.uploadResult ul{
+				display:flex;
+				flex-flow:row;
+				justify-content:center;
+				align-items:center;
+			}
+			.uploadResult ul li{
+				list-style:none;
+				padding:10px;
+				align-content:center;
+				text-align:center;
+			}
+			.uploadResult ul li img{
+				width:100px;
+			}
+			.uploadResult ul li span{
+				color:white;
+			}
+			.bigPictureWrapper{
+				position:absolute;
+				display:none;
+				justify-content:center;
+				align-items:center;
+				top:0%;
+				width:100%;
+				height:100%;
+				background-color:gray;
+				z-index:100;
+				background:rgba(255,255,255,0.5);
+			}
+			.bigPicture{
+				position:relative;
+				display:flex;
+				justify-content:center;
+				align-items:center;
+			}
+			.bigPicture img{
+				width:600px;
+			}
+			</style>
+			
+			
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Board Read</h1>
@@ -62,7 +108,36 @@
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
-
+			
+			<div class='bigPictureWrapper'>
+				<div class='bigPicture'>
+				</div>
+			</div>
+			
+			<!-- 파일 리스트 VIEW -->
+			<div class="row">
+				<div class="col-lg-12">
+					<!-- /.panel -->
+					<div class="panel panel-default">
+						
+						<div class="panel-heading">파 일</div>
+						
+						<!-- /.panel-heading -->
+                        <div class="panel-body">
+                        	<div class='uploadResult'>
+                        		<ul>
+                        		</ul>
+                        	</div>
+                        </div>
+                        <!-- panel-body -->
+					</div>
+					<!-- end of panel -->
+				</div>
+				<!-- end of col -->
+			</div>
+			<!-- end row -->
+			
+			<!-- 댓글 VIEW -->
 			<div class="row">
 				<div class="col-lg-12">
 			
@@ -130,7 +205,7 @@
 
 			<!-- 댓글 기능 스크립트 -->
 			<script type="text/javascript" src="/resources/js/reply.js?ver=1"></script>
-
+			<!-- 댓글 스크립트 구현 -->
 			<script>
 				$(document).ready(function() {
 
@@ -324,4 +399,81 @@
  				
  			});
  			</script>
+ 			
+ 			<!--  파일 기능 script -->
+			<script type="text/javascript">
+			$(document).ready(function(){
+				var bno = '<c:out value="${board.bno}"/>'
+				
+				// event listener
+				$(".uploadResult").on("click","li",function(e){
+					var liObj = $(this);
+					
+					var path = encodeURIComponent(liObj.data("path") + "/" + liObj.data("uuid") + "_" + liObj.data("filename"));
+					
+					if(liObj.data("type")){
+						showImage(path.replace(new RegExp(/\\/g), "/"));
+					}else{
+						self.location="/download?fileName=" + path;
+					}
+				}); // end of uploadResult click
+				
+				$(".bigPictureWrapper").on("click",function(e){
+					$(".bigPicture").animate({width:'0%', height:'0%'}, 1000);
+					
+					setTimeout(function(){
+						$(".bigPicture").hide();
+					}, 1000);
+				});
+				
+				// getJson
+				$.getJSON("/board/getAttachList", {bno : bno}, function(arr){
+					//console.log(arr);
+					
+					var str = "";
+					
+					$(arr).each(function(i, obj){
+						if(obj.fileType){
+							var fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+							
+							str += "<li data-path='" + obj.uploadPath +"'";
+							str += " data-uuid='"+ obj.uuid +"' data-filename='"+ obj.fileName+"' data-type='"+ obj.fileType +"'><div>";
+							str += "<span> " + obj.fileName + "</span>";
+							str += "<button type='button' data-file=\'" + fileCallPath; 
+							str += "\' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+							str += "<img src='/display?fileName=" + fileCallPath + "'>";
+							str += "</div></li>";
+						}
+						else{
+							var fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
+							
+							var fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
+							
+							str += "<li data-path='" + obj.uploadPath +"'";
+							str += " data-uuid='"+ obj.uuid +"' data-filename='"+ obj.fileName+"' data-type='"+ obj.fileType +"'><div>";
+							str += "<span> " + obj.fileName + "</span>";
+							str += "<button type='button' data-file=\'" + fileCallPath;
+							str += "\' data-type='file' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+							str += "<img src='/resources/img/attach.png'></a>";
+							str += "</div></li>";
+						}
+					});
+					
+					$(".uploadResult ul").html(str);
+					
+				}); // end of getJSON
+				
+				// function
+				function showImage(fileCallPath){
+					alert(fileCallPath);
+					
+					$(".bigPictureWrapper").css("display", "flex").show();
+					
+					$(".bigPicture").html("<img src='/display?fileName=" + fileCallPath + "'>")
+					.animate({width:'100%', height:'100%'}, 1000);
+				}
+				
+				
+			}); // end of function
+			</script>
 			<%@include file="../includes/footer.jsp" %>

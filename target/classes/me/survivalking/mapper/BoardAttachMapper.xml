@@ -7,7 +7,7 @@
 <mapper namespace="me.survivalking.mapper.BoardAttachMapper">
 	<insert id="insert">
 		insert into tbl_attach(UUID, UPLOADPATH, FILETYPE, FILENAME, BNO)
-		values (#{uuid}, #(uploadPath), #{fileType}, #{fileName}, #{bno})
+		values (#{uuid}, #{uploadPath}, #{fileType}, #{fileName}, #{bno})
 	</insert>
 	
 	<delete id="delete">

@@ -82,9 +82,27 @@
 				
 				// function 혹은 Event 구현 부
 				
-				$("button[type='submit']").on("click",function(e){  // Default button 기능 정지
+				$("button[type='submit']").on("click",function(e){  // 게시글 등록 버튼 기능 정지
 					console.log("submit clicked")
 					e.preventDefault();
+				
+					var str = "";
+					
+					$(".uploadResult ul li").each(function(i, obj){
+						var jobj = $(obj);
+						
+						console.dir(jobj);
+						
+						console.log(jobj.data("type"));
+						
+						str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("filename") +"'>";
+						str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") +"'>";
+						str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("path") +"'>";
+						str += "<input type='hidden' name='attachList[" + i + "].fileType' value='" + jobj.data("type") +"'>";
+						
+					});
+					
+					formObj.append(str).submit();
 				});
 				// end of button submit
 			
@@ -102,7 +120,7 @@
 					return true;
 				}
 				
-				$("input[type='file']").change(function(e){
+				$("input[type='file']").change(function(e){ // 파일 선택 버튼
 					var formData = new FormData();
 					var inputFile = $("input[name='uploadFile']");
 					var files = inputFile[0].files;
@@ -118,14 +136,14 @@
 					}
 					
 					$.ajax({
-						url: '/board/uploadAjaxAction',
+						url: '/uploadAjaxAction',
 						processData : false,
 						contentType : false,
 						data : formData,
 						type : 'POST',
 						dataType : 'json',
 						success : function(result){
-							alert("업로드 완료");
+							//alert("업로드 완료");
 							
 							showUploadResult(result); // 업로드 한 파일 보여주기
 							
@@ -136,7 +154,7 @@
 					
 				});
 				
-				$(".uploadResult").on("click","button",function(e){
+				$(".uploadResult").on("click","button",function(e){ // X버튼
 					console.log( $(this).data("file"));
 					console.log($(this).data("type"));
 					console.log($(this));
@@ -147,7 +165,7 @@
 					var targetLi = $(this).closest("li");
 					
 					$.ajax({
-						url: '/board/deleteFile',
+						url: '/deleteFile',
 						data : {fileName : targetFile, type:type},
 						type : 'POST',
 						dataType : 'text',
@@ -158,24 +176,25 @@
 					}); // end of ajax
 				});
 				
-				function showUploadResult(uploadResultArr){
+				function showUploadResult(uploadResultArr){ // 데이터 보여주기
 					if(!uploadResultArr || uploadResultArr.length == 0) return;
 					
 					var uploadUL = $(".uploadResult ul");
 					
 					var str = "";
 					
-					// 수정 필요
 					$(uploadResultArr).each(function(i, obj){
 						
 						if(obj.fileType){
 							var fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
 							
-							str += "<li><div>";
+							str += "<li data-path='" + obj.uploadPath +"'";
+							str += " data-uuid='"+ obj.uuid +"' data-filename='"+ obj.fileName+"' data-type='"+ obj.fileType +"'";
+							str += "><div>";
 							str += "<span> " + obj.fileName + "</span>";
 							str += "<button type='button' data-file=\'" + fileCallPath; 
 							str += "\' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
-							str += "<img src='/board/display?fileName=" + fileCallPath + "'>";
+							str += "<img src='/display?fileName=" + fileCallPath + "'>";
 							str += "</div></li>";
 						}
 						else{
@@ -183,10 +202,12 @@
 							
 							var fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
 							
-							str += "<li><div>";
+							str += "<li data-path='" + obj.uploadPath +"'";
+							str += " data-uuid='"+ obj.uuid +"' data-filename='"+ obj.fileName+"' data-type='"+ obj.fileType +"'";
+							str += "><div>";
 							str += "<span> " + obj.fileName + "</span>";
 							str += "<button type='button' data-file=\'" + fileCallPath;
-							str += "\' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+							str += "\' data-type='file' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
 							str += "<img src='/resources/img/attach.png'></a>";
 							str += "</div></li>";
 						}
