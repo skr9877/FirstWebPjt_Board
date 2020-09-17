@@ -25,7 +25,7 @@ public class Criteria {
 		return type == null ? new String[] {}:type.split("");
 	}
 	
-	public String getListLink() {
+	public String getListLink() { // get 방식의 파라미터 전송에 사용되는 문자열을 쉽게 처리 가능
 		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
 				.queryParam("pageNum", this.pageNum)
 				.queryParam("amount", this.amount)

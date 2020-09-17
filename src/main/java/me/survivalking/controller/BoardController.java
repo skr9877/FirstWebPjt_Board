@@ -6,6 +6,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -106,16 +108,14 @@ public class BoardController {
 	public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		//log.info("remove : " + bno);
 
+		List<BoardAttachVO> attachList = service.getattachList(bno);
+		
 		if (service.remove(bno)) {
+			deleteFiles(attachList);
+			
 			rttr.addFlashAttribute("result", "success");
 		}
 		
-		/*
-		 * rttr.addAttribute("pageNum", cri.getPageNum()); rttr.addAttribute("amount",
-		 * cri.getAmount()); rttr.addAttribute("type", cri.getType());
-		 * rttr.addAttribute("keyword", cri.getKeyword());
-		 */
-
 		return "redirect:/board/list" + cri.getListLink();
 	}
 	
@@ -127,4 +127,26 @@ public class BoardController {
 		return new ResponseEntity<>(service.getattachList(bno), HttpStatus.OK);
 	}
 	
+	private void deleteFiles(List<BoardAttachVO> attachList) {
+		if(attachList == null || attachList.size() == 0) return;
+		
+		attachList.forEach(attach->{
+			try {
+				Path file = Paths.get("D:\\Spring_Pjt\\upload\\temp\\" + attach.getUploadPath() + "\\" + attach.getUuid() + "_" + attach.getFileName());
+				
+				Files.deleteIfExists(file);
+				
+				log.info(Files.probeContentType(file));
+				
+				if(Files.probeContentType(file).startsWith("image")) { // 이미지이면
+					Path thumbNail = Paths.get("D:\\Spring_Pjt\\upload\\temp\\" +  attach.getUploadPath() + "\\s_" + attach.getUuid() + "_" + attach.getFileName());
+					
+					Files.delete(thumbNail);
+				}
+			}
+			catch(Exception e) {
+				log.error("delete file error" + e.getMessage());
+			} // end of catch
+		}); // end of foreach
+	}
 }

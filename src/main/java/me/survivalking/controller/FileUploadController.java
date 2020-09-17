@@ -46,8 +46,8 @@ public class FileUploadController {
 	
 	private boolean checkImageType(File file) {
 		try {
-			String contentType = Files.probeContentType(file.toPath());
-			
+			String contentType = Files.probeContentType(file.toPath());		
+
 			return contentType.startsWith("image");
 		}
 		catch (Exception e) {

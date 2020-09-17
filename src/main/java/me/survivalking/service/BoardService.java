@@ -23,6 +23,4 @@ public interface BoardService {
 	
 	// 파일 service
 	public List<BoardAttachVO> getattachList(Long bno);
-	
-	
 }

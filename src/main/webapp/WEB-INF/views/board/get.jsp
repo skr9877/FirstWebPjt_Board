@@ -422,7 +422,7 @@
 					$(".bigPicture").animate({width:'0%', height:'0%'}, 1000);
 					
 					setTimeout(function(){
-						$(".bigPicture").hide();
+						$(".bigPictureWrapper").hide();
 					}, 1000);
 				});
 				
@@ -439,8 +439,7 @@
 							str += "<li data-path='" + obj.uploadPath +"'";
 							str += " data-uuid='"+ obj.uuid +"' data-filename='"+ obj.fileName+"' data-type='"+ obj.fileType +"'><div>";
 							str += "<span> " + obj.fileName + "</span>";
-							str += "<button type='button' data-file=\'" + fileCallPath; 
-							str += "\' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+							str += "<br>";
 							str += "<img src='/display?fileName=" + fileCallPath + "'>";
 							str += "</div></li>";
 						}
@@ -452,8 +451,7 @@
 							str += "<li data-path='" + obj.uploadPath +"'";
 							str += " data-uuid='"+ obj.uuid +"' data-filename='"+ obj.fileName+"' data-type='"+ obj.fileType +"'><div>";
 							str += "<span> " + obj.fileName + "</span>";
-							str += "<button type='button' data-file=\'" + fileCallPath;
-							str += "\' data-type='file' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+							str += "<br>";
 							str += "<img src='/resources/img/attach.png'></a>";
 							str += "</div></li>";
 						}
@@ -465,7 +463,7 @@
 				
 				// function
 				function showImage(fileCallPath){
-					alert(fileCallPath);
+					//alert(fileCallPath);
 					
 					$(".bigPictureWrapper").css("display", "flex").show();
 					
