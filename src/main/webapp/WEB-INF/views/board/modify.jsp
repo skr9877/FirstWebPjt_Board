@@ -151,50 +151,59 @@
 			</div>
 			<!-- end row -->
             
-            <!-- 버튼 제어 -->
-            <script type="text/javascript">
- 			$(document).ready(function(){
- 				var formObj = $("form");
- 				
- 				$('button').on("click", function(e){
- 					e.preventDefault();
- 					
- 					var operation = $(this).data("oper");
- 					
- 					console.log("modify 페이지 Operation : " + operation);
- 					
- 					if(operation === 'remove'){
- 						formObj.attr("action", "/board/remove");
- 					}
- 					else if(operation === 'list'){
- 						// Move to list.jsp
- 						//self.location = "/board/list";
- 						formObj.attr("action", "/board/list").attr("method","get");
- 						var pageNumTag = $("input[name='pageNum']").clone();
- 						var amountTag = $("input[name='amount']").clone();
- 						var typeTag = $("input[name='type']").clone();
- 						var keywordTag = $("input[name='keyword']").clone();
- 						
- 						formObj.empty();
- 						formObj.append(pageNumTag);
- 						formObj.append(amountTag);
- 						formObj.append(typeTag);
- 						formObj.append(keywordTag);
- 					}
- 					
- 					formObj.submit();
- 				});
- 				
- 			});
- 			</script>
  			
  			<!-- 파일 수정 혹은 삭제 -->
- 			<script>
+ 			<script type="text/javascript">
  			$(document).ready(function(){
  				(function(){
  					var bno = '<c:out value="${board.bno}"/>';
  					var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
  					var maxSize = 5242880; // 5MB
+ 					var formObj = $("form"); // form 오브젝트
+ 	 				
+ 					// submit 버튼 제어
+ 	 				$('button').on("click", function(e){
+ 	 					e.preventDefault();
+ 	 					
+ 	 					var operation = $(this).data("oper");
+ 	 					
+ 	 					console.log("modify 페이지 Operation : " + operation);
+ 	 					
+ 	 					if(operation === 'remove'){
+ 	 						formObj.attr("action", "/board/remove");
+ 	 					}
+ 	 					else if(operation === 'list'){
+ 	 						// Move to list.jsp
+ 	 						//self.location = "/board/list";
+ 	 						formObj.attr("action", "/board/list").attr("method","get");
+ 	 						var pageNumTag = $("input[name='pageNum']").clone();
+ 	 						var amountTag = $("input[name='amount']").clone();
+ 	 						var typeTag = $("input[name='type']").clone();
+ 	 						var keywordTag = $("input[name='keyword']").clone();
+ 	 						
+ 	 						formObj.empty();
+ 	 						formObj.append(pageNumTag);
+ 	 						formObj.append(amountTag);
+ 	 						formObj.append(typeTag);
+ 	 						formObj.append(keywordTag);
+ 	 					}
+ 	 					else if(operation === 'modify'){
+ 	 						var str = "";
+ 	 						
+ 	 						$(".uploadResult ul li").each(function(i, obj){
+ 	 							var jobj = $(obj);
+ 	 							
+ 	 							str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("filename") +"'>";
+ 	 							str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") +"'>";
+ 	 							str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("path") +"'>";
+ 	 							str += "<input type='hidden' name='attachList[" + i + "].fileType' value='" + jobj.data("type") +"'>";
+ 	 						});
+ 	 						
+ 	 						formObj.append(str).submit();
+ 	 					}
+ 	 					
+ 	 					formObj.submit();
+ 	 				});
  					
  					// function 혹은 Event 구현 부
  					$(".uploadResult").on("click", "button", function(e){
@@ -258,7 +267,7 @@
  						uploadUL.append(str);
  					}
  					
- 					// 파일 선택 버튼 클릭시 추가
+ 					// 파일 선택 버튼 클릭시 로컬 저장소에 파일 추가
  					$("input[type='file']").change(function(e){ // 파일 선택 버튼
  						var formData = new FormData();
  						var inputFile = $("input[name='uploadFile']");
