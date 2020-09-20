@@ -43,6 +43,7 @@
 	
 	<!-- Component Scan -->
 	<context:component-scan base-package="me.survivalking.service"/>
+	<context:component-scan base-package="me.survivalking.task"/>
 	
 	<task:annotation-driven/>
 </beans>
