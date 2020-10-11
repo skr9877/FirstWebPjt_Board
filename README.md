@@ -17,6 +17,6 @@ Spring 게시판 프로젝트
  . 게시글 삭제 시 foreign key로 엮인 파일 삭제
  . 게시글 수정 시 파일 수정
 - Quartz라이브러리를 통한 Scheduling으로 DB상에 저장되있지 않은 파일 제거(게시물에 대한 파일 관리, sysdate - 1)
-- 스프링 security 관련 내용 적용 예정
+- 스프링 security 적용 진행중
 
 3. 데이터베이스 관계도(작성 예정)
