@@ -46,6 +46,8 @@ public class FileCheckTask {
 		//fileList in database
 		List<BoardAttachVO> fileList = attachMapper.getOldFiles();
 		
+		System.out.println("리스트 갯수 : " + fileList.size());
+		
 		// Path List 구성
 		List<Path> fileListPaths = fileList.stream().map(vo -> Paths.get("D:\\Spring_Pjt\\upload\\temp", vo.getUploadPath(), 
 				                                         vo.getUuid() + "_" + vo.getFileName())).collect(Collectors.toList());
@@ -60,6 +62,7 @@ public class FileCheckTask {
 		File[] removeFiles = targetDir.listFiles(file -> fileListPaths.contains(file.toPath()) == false);
 		
 		for(File file : removeFiles) {
+			System.out.println(file);
 			file.delete(); // DB에 경로가 없는 파일 삭제
 		}
 		

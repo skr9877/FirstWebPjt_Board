@@ -20,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -62,11 +63,13 @@ public class BoardController {
 	}
 	
 	@GetMapping("/register")
+	//@PreAuthorize("isAuthenticated()")
 	public void register() {
 		
 	}
 
 	@PostMapping("/register")
+	//@PreAuthorize("isAuthenticated()")
 	public String register(BoardVO board, RedirectAttributes rttr) {
 		//log.info("register : " + board);
 		
