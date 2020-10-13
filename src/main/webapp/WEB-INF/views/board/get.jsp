@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri= "http://java.sun.com/jsp/jstl/core" prefix="c" %> <!-- jstl core -->
 <%@ taglib uri= "http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> <!-- jstl formatting -->
+<%@ taglib uri= "http://www.springframework.org/security/tags" prefix="sec" %>
 
 <%@include file="../includes/header.jsp" %>
 			<style>
@@ -89,8 +90,15 @@
                             	<label>Writer</label> <input class="form-control" name = "writer"
      											    value = '<c:out value="${board.writer}"/>' readonly="readonly" />
                             </div>
+							
+							<!-- 작성자와 같은 id 이면 modify 가능 -->                            
+                            <sec:authentication property="principal" var="pinfo"/>
+                            <sec:authorize access="isAuthenticated()">
+                            	<c:if test="${pinfo.username eq board.writer}"> 
+                            		<button data-oper='modify' class="btn btn-default">수정</button>
+                            	</c:if>
+                            </sec:authorize>
                             
-                            <button data-oper='modify' class="btn btn-default">수정</button>
                             <button data-oper='list' class="btn btn-default">리스트</button>
                             
                             <form id="operForm" action="/board/modify" method="get">

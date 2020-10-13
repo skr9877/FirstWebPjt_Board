@@ -1,4 +1,4 @@
-package me.survivalking.controller;
+package me.survivalking.test;
 
 import static org.junit.Assert.assertNotNull;
 

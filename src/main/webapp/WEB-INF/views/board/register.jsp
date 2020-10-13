@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri= "http://java.sun.com/jsp/jstl/core" prefix="c" %> <!-- jstl core -->
 <%@ taglib uri= "http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> <!-- jstl formatting -->
+<%@ taglib uri= "http://www.springframework.org/security/tags" prefix="sec" %>
 
 <%@include file="../includes/header.jsp" %>
 
@@ -21,6 +22,7 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <form role="form" action="/board/register" method="post">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             	<div class="form-group">
                             		<label>Title</label> <input class="form-control" name="title">
                             	</div>
@@ -31,7 +33,7 @@
                             	</div>
                             	
                             	<div class="form-group">
-                            		<label>작성자</label> <input class="form-control" name="writer">
+                            		<label>작성자</label> <input class="form-control" name="writer" value="<sec:authentication property='principal.username'/>" readonly="readonly"/>
                             	</div>
                             	
                             	<button type="submit" class="btn btn-default">글 등록</button>
