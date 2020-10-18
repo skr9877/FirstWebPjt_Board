@@ -154,7 +154,11 @@
 						
 						<div class="panel-heading">
 							<i class="fa fa-comments fa-fw"></i> 댓글
-							<button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>New Reply</button>
+							
+							<sec:authorize access="isAuthenticated()">
+								<button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>New Reply</button>
+							</sec:authorize>
+							
 						</div>
 						
 						<!-- /.panel-heading -->
@@ -190,7 +194,7 @@
 								</div>
 								<div class="form-group">
 									<label>작성자</label>
-									<input class="form-control" name='replyer' value='replyer'>
+									<input class="form-control" name='replyer' value='replyer' readonly>
 								</div>
 								<div class="form-group">
 									<label>댓글 작성일</label>
@@ -223,8 +227,8 @@
 				showList(1);
 			
 				// 댓글 보여주기 기능
-				function showList(page) {replyService.getList({bno : bnoValue,page : page || 1},
-										function(replyCnt, list) {
+				function showList(page) {
+					replyService.getList({bno : bnoValue,page : page || 1}, function(replyCnt, list) {
 											if(page == -1){
 												pageNum = Math.ceil(replyCnt/10.0);
 												showList(pageNum);
@@ -234,6 +238,7 @@
 											var str = "";
 
 											if (list == null || list.length == 0) {
+												replyUL.html(str);
 												return;
 											}
 
@@ -259,9 +264,24 @@
 				var modalRemoveBtn = $("#modalRemoveBtn");
 				var modalRegisterBtn = $("#modalRegisterBtn");
 				
+				var replyer = null;
+				
+				<sec:authorize access="isAuthenticated()">
+					replyer = '<sec:authentication property="principal.username"/>';
+				</sec:authorize>
+				
+				var csrfHeaderName = "${_csrf.headerName}";
+				var csrfTokenValue = "${_csrf.token}";
+				
+				//Ajax Spring Security 헤더
+				$(document).ajaxSend(function(e,xhr,options){
+					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+				});
+				
 				// 댓글추가 선택시 모달 띄우기
 				$("#addReplyBtn").on("click", function(e){
 					modal.find("input").val("");
+					modal.find("input[name='replyer']").val(replyer);
 					modalInputReplyDate.closest("div").hide();
 					modal.find("button[id != 'modalCloseBtn']").hide();
 					
@@ -287,7 +307,21 @@
 				});
 				
 				modalModBtn.on("click", function(e){
-					var reply = {rno:modal.data("rno"), reply:modalInputReply.val(), replyer:modalInputReplyer.val()};
+					var originalReplyer = modalInputReplyer.val();
+					
+					var reply = {rno:modal.data("rno"), reply:modalInputReply.val(), replyer:originalReplyer};
+					
+					if(!replyer){
+						alert("로그인 후 수정이 가능합니다.");
+						modal.modal("hide");
+						return;
+					}
+					
+					if(replyer != originalReplyer){
+						alert("자신이 작성한 댓글만 수정 가능 합니다.");
+						modal.modal("hide");
+						return;
+					}
 					
 					replyService.update(reply, function(result){
 						alert(result);
@@ -299,7 +333,21 @@
 				modalRemoveBtn.on("click", function(e){
 					var rno = modal.data("rno");
 					
-					replyService.remove(rno, function(result){
+					if(!replyer){
+						alert("로그인 후 삭제가 가능합니다.");
+						modal.modal("hide");
+						return;
+					}
+					
+					var originalReplyer = modalInputReplyer.val();
+					
+					if(replyer != originalReplyer){
+						alert("자신이 작성한 댓글만 삭제 가능 합니다.");
+						modal.modal("hide");
+						return;
+					}
+					
+					replyService.remove(rno, originalReplyer, function(result){
 						alert(result);
 						modal.modal("hide");
 						showList(pageNum);
@@ -381,13 +429,6 @@
 				});
 				
 			});		
-			</script>
-			
-			<script>
-			$(document).ready(function() {
-				
-			
-			});
 			</script>
 			
 			<!--  board 기능 script -->

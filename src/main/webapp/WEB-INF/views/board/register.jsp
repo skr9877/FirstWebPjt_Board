@@ -81,6 +81,8 @@
 				var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
 				var maxSize = 5242880; // 5MB
 				var uploadResult = $(".uploadResult ul");
+				var csrfHeaderName = "${_csrf.headerName}";
+				var csrfTokenValue = "${_csrf.token}";
 				
 				// function 혹은 Event 구현 부
 				
@@ -141,6 +143,9 @@
 						url: '/uploadAjaxAction',
 						processData : false,
 						contentType : false,
+						beforeSend: function(xhr) {
+							xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+						},
 						data : formData,
 						type : 'POST',
 						dataType : 'json',
@@ -169,6 +174,9 @@
 					$.ajax({
 						url: '/deleteFile',
 						data : {fileName : targetFile, type:type},
+						beforeSend: function(xhr) {
+							xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+						},
 						type : 'POST',
 						dataType : 'text',
 						success : function(result){

@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri= "http://java.sun.com/jsp/jstl/core" prefix="c" %> <!-- jstl core -->
 <%@ taglib uri= "http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> <!-- jstl formatting -->
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 
 <%@include file="../includes/header.jsp" %>
 			<style>
@@ -69,6 +70,8 @@
                            
                            	<form role="form" action="/board/modify" method ="post">
                             
+                            <input type='hidden' name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            
                             <input type='hidden' name ='pageNum' value='<c:out value="${cri.pageNum}"/>'>
                             <input type='hidden' name ='amount' value='<c:out value="${cri.amount}"/>'>
                             <input type="hidden" name="type" value="${cri.type}">
@@ -110,8 +113,15 @@
      						     readonly="readonly" />
                             </div>
                             
-                            <button type="submit" data-oper='modify' class="btn btn-default">수정</button>
-                            <button type="submit" data-oper='remove' class="btn btn-danger">삭제</button>
+                            <sec:authentication property="principal" var="pinfo"/>
+                            
+                            <sec:authorize access="isAuthenticated()">
+                            	<c:if test="${pinfo.username eq board.writer}">
+                            		<button type="submit" data-oper='modify' class="btn btn-default">수정</button>
+                           		     <button type="submit" data-oper='remove' class="btn btn-danger">삭제</button>
+                            	</c:if>
+                            </sec:authorize>
+                            
                             <button type="submit" data-oper='list' class="btn btn-info">리스트</button>
                              
                             </form>
@@ -160,6 +170,8 @@
  					var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
  					var maxSize = 5242880; // 5MB
  					var formObj = $("form"); // form 오브젝트
+ 					var csrfHeaderName = "${_csrf.headerName}";
+ 					var csrfTokenValue = "${_csrf_token}";
  	 				
  					// submit 버튼 제어
  	 				$('button').on("click", function(e){
@@ -289,6 +301,9 @@
  							contentType : false,
  							data : formData,
  							type : 'POST',
+ 							beforeSend : function(xhr){
+ 								xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+ 							},
  							dataType : 'json',
  							success : function(result){
  								//alert("업로드 완료");

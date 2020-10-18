@@ -35,23 +35,22 @@ public class FileCheckTask {
 		return str.replace("-", File.separator);	
 	}
 	
-	@Scheduled(cron = "0 0 * * * *")
+	@Scheduled(cron = "0 * * * * *")
 	public void checkFiles() throws Exception{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		Date date = new Date();
 		String str = dateFormat.format(date);
 		
-		log.warn("File check Task run ......." + str);
-		
 		//fileList in database
 		List<BoardAttachVO> fileList = attachMapper.getOldFiles();
 		
-		System.out.println("리스트 갯수 : " + fileList.size());
+		if(fileList == null || fileList.isEmpty()) return;
 		
 		// Path List 구성
 		List<Path> fileListPaths = fileList.stream().map(vo -> Paths.get("D:\\Spring_Pjt\\upload\\temp", vo.getUploadPath(), 
 				                                         vo.getUuid() + "_" + vo.getFileName())).collect(Collectors.toList());
 		
+		// Thumb nail file 제거 리스트에 추가
 		fileList.stream().filter(vo -> vo.isFileType() == true).map(vo -> Paths.get("D:\\Spring_Pjt\\upload\\temp", vo.getUploadPath(), 
                 "s_" + vo.getUuid() + "_" + vo.getFileName())).forEach(p -> fileListPaths.add(p));
 		
@@ -62,7 +61,6 @@ public class FileCheckTask {
 		File[] removeFiles = targetDir.listFiles(file -> fileListPaths.contains(file.toPath()) == false);
 		
 		for(File file : removeFiles) {
-			System.out.println(file);
 			file.delete(); // DB에 경로가 없는 파일 삭제
 		}
 		
