@@ -22,7 +22,7 @@ Spring 게시판 프로젝트
   . bycrptPassword Encoder 사용
   . UserDetailService 구현
   . POST, DELETE, PUT, PATCH등 진행시 csrf 값 헤더 정보에 포함
-  . 게시물, 댓글 삭제 및 수정시 replyer 및 writer를 확인하여 
+  . 게시물, 댓글 crud 시 spring security 기반 로그인 validation
 
 3. 데이터베이스 관계도(작성 예정)
 
