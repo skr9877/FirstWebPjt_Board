@@ -12,16 +12,11 @@
 	<bean id="customUserDetailService" class="me.survivalking.security.CustomUserDetailsService"/> <!-- UserDatailService 빈 등록 -->
 
 	<security:http>
-		<security:intercept-url pattern="/board/list" access="permitAll"/>
-		<security:intercept-url pattern="/sample/member" access="hasRole('ROLE_MEMBER')"/>
-		<security:intercept-url pattern="/sample/admin" access="hasRole('ROLE_ADMIN')"/>
-		
 		<security:form-login login-page="/customLogin"/>
-		<security:logout logout-url="/customLogout" invalidate-session="true"/>
 		<security:access-denied-handler ref="customAccessDenied"/> <!-- handler를 통한 제어 -->
 		
 		<security:remember-me data-source-ref="dataSource" token-validity-seconds="604800"/>
-		<security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me,JSESSIONID"/>
+		<security:logout logout-url="/customLogout" logout-success-url="/board/list" invalidate-session="true" delete-cookies="remember-me,JSESSIONID"/>
 	</security:http>
 	
 	<security:authentication-manager>

@@ -60,6 +60,7 @@
 	<script>
 		$(".btn-success").on("click",function(e){
 			e.preventDefault();
+			alert("로그인 하셨습니다.");
 			$("form").submit();
 		});
 	</script>

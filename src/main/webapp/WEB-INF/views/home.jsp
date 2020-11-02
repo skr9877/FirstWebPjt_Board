@@ -15,4 +15,8 @@
 <P>  The time on the server is ${serverTime}. </P>
 <a href='/board/list?pageNum=1&amount=10'>홈페이지로 가기</a>
 </body>
+
+<script>
+	self.location="board/list";
+</script>
 </html>

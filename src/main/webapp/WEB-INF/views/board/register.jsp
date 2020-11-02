@@ -87,7 +87,7 @@
 				// function 혹은 Event 구현 부
 				
 				$("button[type='submit']").on("click",function(e){  // 게시글 등록 버튼 기능 정지
-					console.log("submit clicked")
+					console.log("submit clicked");
 					e.preventDefault();
 				
 					var str = "";
